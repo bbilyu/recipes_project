@@ -1,0 +1,41 @@
+{% extends 'recipes/base.html' %}
+
+
+{% block content %}
+
+
+<div class="recipes_posts_home">
+  {% if recipes %}
+  {% for p in recipes %}
+  <div class="blog-card home">
+    <div class="meta">
+      <div class="photo" style="background-image: url({{p.photo.url}})"></div>
+      <ul class="details">
+        <li class="author"><a href="#">{{p.author}}</a></li>
+        <li class="date">{{p.time_update|date:"d-m-Y"}}</li>
+        <li class="tags">
+          <ul>
+            <li><a href="#">{{p.cat.first}}</a></li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+    <div class="description">
+      <h1>{{p.title}}</h1>
+      {% autoescape on %}
+      {{ p.description|truncatechars:100 }}
+      {% endautoescape %}
+      <a href="{{ p.get_absolute_url_show }}">Читать</a>
+    </div>
+  </div>
+  {% endfor %}
+  <div class="btn_footer home">
+    <a href="/all" class="btn">Больше рецептов</a>
+  </div>
+  {% else %}
+  <p class=recipes_missing>Рецепты отсутствуют</p>
+  {% endif %}
+</div>
+{% endblock %}
+
+

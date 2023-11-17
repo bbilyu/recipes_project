@@ -1,0 +1,93 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>{{title}}</title>
+    <link type="text/css" href="{% static 'recipes/css/styles.css' %}" rel="stylesheet" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  </head>
+  <body>
+    <h2 style="display: none">Body site</h2>
+    <header>
+      <div class="banner container_top">
+        <div class="header_navigation container_top">
+          {% block mainmenu %}
+          <nav>
+            <ul>
+              {% for m in main_menu %}
+              {% if m.title == "Рецепты" %}
+              {% if request.user.is_authenticated %}
+              {% if "Все рецепты" in title or "Мои рецепты" in title %}
+              <li class="selected">
+              {% else %}
+              <li>
+              {% endif %}
+                <a href="{% url m.url_name %}">{{ m.title }}</a>
+                <ul>
+                  {% for a in additional_menu %}
+                  <li><a href="{% url a.url_name %}">{{ a.title }}</a></li>
+                  {% endfor %}
+                </ul>
+              </li>
+              {% elif "Все рецепты" in title or "Мои рецепты" in title %}
+              <li class="selected">{{ m.title }}</li>
+              {% else %}
+              <li><a href="{% url m.url_name %}">{{ m.title }}</a></li>
+              {% endif %}
+              {% elif title == m.title %}
+              <li class="selected">{{ m.title }}</li>
+              {% else %}
+              <li><a href="{% url m.url_name %}">{{ m.title }}</a></li>
+              {% endif %}
+              {% endfor %}
+            </ul>
+          </nav>
+          <nav>
+            <ul>
+              {% if request.user.is_authenticated %}
+              {% if title == "Профиль" %}
+              <li class="selected">{{user.username}}</li>
+              {% else %}
+              <li class="last"><a href="{% url 'edit_profile' user_id=request.user.pk %}">{{user.username}}</a></li>
+              {% endif %}
+              <li class="last"><a href="{% url 'logout' %}">Выйти</a></li>
+              {% else %}
+              {% if title == "Авторизация" or title == "Регистрация" %}
+              <li class="selected">Войти</li>
+              {% else %}
+              <li class="btn_login_popup"><a href="{% url 'login' %}">Войти</a></li>
+              {% endif %}
+              {% endif %}
+            </ul>
+          </nav>
+          {% endblock mainmenu %}
+        </div>
+      </div>
+    </header>
+    <main class="container_top">
+      <!-- Sidebar слева -->
+      {% block slidebar %} {% endblock %}
+      <!-- Конец Sidebar'а -->
+      {% block breadcrumbs %} {% endblock %}
+      <!-- Блок контента -->
+      {% block content %} 
+      {% endblock %} 
+      <!-- Конец блока контента -->
+    </main>
+    <footer>
+      <section class="copyright container_top">
+        <div class="footer_copyright_left_side">
+          <h2>© 2023 Beloglazov</h2>
+        </div>
+        <div class="footer_copyright_right_side">
+          <a href="{% url 'redirect_telegram' %}" class="footer__btns telegram"
+            ><img src="/static/recipes/images/footer_copyright_telegram.svg" alt="telegram"
+          /></a>
+          <a href="{% url 'redirect_instagram' %}" class="footer__btns instagram"
+            ><img src="/static/recipes/images/footer_copyright_instagram.svg" alt="instagram"
+          /></a>
+        </div>
+      </section>
+    </footer>
+  </body>
+</html>

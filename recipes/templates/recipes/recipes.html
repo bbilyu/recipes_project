@@ -1,0 +1,79 @@
+{% extends 'recipes/base.html' %}
+{% block slidebar %}
+<nav class="left_slidebar header_navigation" >
+  <ul>
+    {% if cat_selected == 0 %}
+    <li class="selected">Все рецепты</li>
+    {% else %}
+    <li><a href="{% url 'all' %}">Все рецепты</a></li>
+    {% endif %}
+    {% for c in cats %}
+    {% if c.recipe__count > 0 %}
+    {% if c.pk == cat_selected %}
+    <li class="selected">{{c.name}}</li>
+    {% else %}
+    <li><a href="{{ c.get_absolute_url_all }}">{{c.name}}</a></li>
+    {% endif %}
+    {% endif %}
+    {% endfor %}
+  </ul>
+</nav>
+{% endblock %}
+{% block content %}
+<div class="recipes_posts">
+  {% if recipes %}
+  {% for p in recipes %}
+  <div class="blog-card">
+    <div class="meta">
+      <div class="photo" style="background-image: url({{p.photo.url}})"></div>
+      <ul class="details">
+        <li class="author"><a href="#">{{p.author}}</a></li>
+        <li class="date">{{p.time_update|date:"d-m-Y"}}</li>
+        <li class="tags">
+          <ul>
+            <li><a href="#">{{p.cat.first}}</a></li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+    <div class="description">
+      <h1>{{p.title}}</h1>
+      {% autoescape on %}
+      {{p.description|truncatechars:100}}
+      {% endautoescape %}
+      <a href="{{ p.get_absolute_url_show }} ">Читать</a>
+    </div>
+  </div>
+  {% endfor %}
+  {% else %}
+  <p class=recipes_missing>Рецепты отсутствуют</p>
+  {% endif %}
+  {% if page_obj.has_other_pages %}
+  <nav class="list-pages">
+    <ul>
+      {% if page_obj.has_previous %}
+      <li class="page-num">
+        <a href="?page={{ page_obj.previous_page_number }}">&laquo;</a>
+      </li>
+      {% endif %} 
+      {% for p in paginator.page_range %} 
+      {% if page_obj.number == p %}
+      <li class="page-num page-num-selected">{{ p }}</li>
+      {% elif p >= page_obj.number|add:-2 and p <= page_obj.number|add:2 %}
+      <li class="page-num">
+        <a href="?page={{ p }}">{{ p }}</a>
+      </li>
+      {% endif %} 
+      {% endfor %} 
+      {% if page_obj.has_next %}
+      <li class="page-num">
+        <a href="?page={{ page_obj.next_page_number }}">&raquo;</a>
+      </li>
+      {% endif %}
+    </ul>
+  </nav>
+  {% endif %}
+</div>
+{% endblock %}
+
+

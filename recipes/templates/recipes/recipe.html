@@ -1,0 +1,26 @@
+{% extends 'recipes/base.html' %}
+
+{% block content %}
+<div class="container_post">
+    {% if recipe.photo %}
+    <div class="image_block">
+        <img src="{{recipe.photo.url}}" alt="фото рецепта">
+      </div>
+    {% endif %}
+    <div class="description_recipe_post">
+        <h1>{{recipe.title}}</h1>
+        <p class="title_post">Описание</p>
+        <p>{{ recipe.description|linebreaksbr }}</p>
+        <p class="title_post">Приготовление</p>
+        <p> {{recipe.steps|linebreaksbr}}</p>
+        <p class="title_post">Время приготовления</p>
+        <p> {{recipe.cooking_time}}</p>
+    </div>
+    <div class="footer_post">
+        <p class="author_post">{{recipe.author}}</p>
+        {% if request.user == recipe.author %}
+        <a href="{{ recipe.get_absolute_url_edit }}">Редактировать</a>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

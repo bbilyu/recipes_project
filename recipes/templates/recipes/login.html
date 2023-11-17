@@ -1,0 +1,14 @@
+{% extends 'recipes/base.html' %}
+{% block content %}
+<form method="post">
+    {% csrf_token %}
+    <h3>{{ title }}</h3>
+    <div class="form-error">{{ form.non_field_errors }}</div>
+    {% for f in form %}
+    <p><label class="form-label" form="{{ f.id_for_label }}">{{f.label}}: </label>{{ f }}</p>
+    <div class="form-error">{{ f.errors }}</div>
+    {% endfor %}
+    <button>Войти</button>
+    <a href="{% url 'register' %}" class="register-login">Регистрация</a>
+</form>
+{% endblock %}
